@@ -1,21 +1,32 @@
 import cgi_helper
 
 
-def get_files():
-    dirnames = [
+def enter_read_mode():
+    print(cgi_helper.run_cgi('client', operation='register',
+                             ip=cgi_helper.CLIENT_ADDRESS))
+    print(cgi_helper.run_cgi('setworkmode', workmode='ENTER_PLAYBACK'))
+    print(cgi_helper.run_cgi('workmodecmd', cmd='stop'))
+
+
+def get_dirnames():
+    return [
         dirname
         for dirname
-        in cgi_helper.get_vars('getdircapability')['capability'].split(',')
+        in cgi_helper.run_cgi('getdircapability')['capability'].split(',')
         if dirname
     ]
 
-    counts = {
-        dirname: cgi_helper.get_vars('getdirfilecount', dir=dirname)
-        for dirname in dirnames
-    }
 
-    print(counts)
+def count_files(dirnames):
+    for dirname in dirnames:
+        yield dirname, cgi_helper.run_cgi('getdirfilecount', dir=dirname)
 
 
-if __name__ == "__main__":
-    get_files()
+def list_files(counts):
+    for dirname, count in counts:
+        if count.get('count') is None:
+            yield (dirname, {'Error': count})
+        yield (dirname, cgi_helper.run_cgi('getdirfilelist',
+                                           dir=dirname,
+                                           start=0,
+                                           end=int(count.get('count')) - 1))

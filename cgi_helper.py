@@ -2,6 +2,7 @@ import requests
 import datetime
 import cam_helper
 
+CLIENT_ADDRESS = '192.168.1.21'  # The cam usually assigns this. Arbitrary.
 CGI_ADDRESS_BASE = f'http://{cam_helper.CAM_ADDRESS}/cgi-bin/hisnet'
 HISNET_ERRORS = {
     '0xFFFFF752': 'HISNET_SVR_RTN_ERROR',
@@ -11,10 +12,10 @@ HISNET_ERRORS = {
 }
 
 
-def get_vars(varname, **kwargs):
+def run_cgi(varname, **kwargs):
     params = ''.join(f'&-{k}={v}' for k, v in kwargs.items())
     url = f'{CGI_ADDRESS_BASE}/{varname}.cgi?{params}'
-    print('Getting', url)
+    print('[CGI]', url)
     deviceattr_raw = requests.get(url,
                                   headers={
                                       'Accept-Encoding': 'gzip',
@@ -32,7 +33,9 @@ def _clean_var_line_key(var_line):
         return 'SvrFuncResult'
     if var_line.startswith('var '):
         return var_line.split('=')[0][4:]
-    return None
+    if var_line.startswith('sd/'):
+        return 'Files'
+    return 'Status'
 
 
 def _clean_var_line_value(var_line):
@@ -41,7 +44,11 @@ def _clean_var_line_value(var_line):
         return HISNET_ERRORS.get(hexerror, hexerror)
     if var_line.startswith('var '):
         return var_line.split('=')[1].strip('";')
-    return None
+    if var_line.startswith('Success'):
+        return 'Success'
+    if var_line.startswith('sd/'):
+        return var_line.strip().strip(';').split(';')
+    return var_line
 
 
 def _clean_var_result(var_result):
