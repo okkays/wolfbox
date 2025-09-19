@@ -2,6 +2,7 @@ import cv2
 import streamlit as st
 import requests
 import datetime
+import stream_helper
 
 CAM_ADDRESS = "192.168.1.1"
 HTTP_ADDRESS_BASE = f'http://{CAM_ADDRESS}/cgi-bin/hisnet'
@@ -47,9 +48,9 @@ def setup_time():
     config.button("Sync camera time", on_click=set_time)
 
 
-def setup_cap(cap, viewer):
-    while cap.isOpened():
-        ret, frame = cap.read()
+def setup_stream(streamer, viewer):
+    while True:
+        frame = stream_helper.read_frame(streamer)
         frame_jpg = cv2.imencode('.jpg', frame)[1].tobytes()
         viewer.image(frame_jpg, channels="BGR", width="stretch")
 
@@ -62,8 +63,5 @@ setup_time()
 for varname in ['getdeviceattr']:
     get_and_display_vars(varname)
 
-try:
-    cap = cv2.VideoCapture(rtsp_address)
-    setup_cap(cap, viewer)
-finally:
-    cap.release()
+with stream_helper.stream(rtsp_address) as streamer:
+    setup_stream(streamer, viewer)
