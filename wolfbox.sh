@@ -7,10 +7,17 @@ WOLFBOX=192.168.1.1
 # echo 'getworkstate:'
 # curl "$WOLFBOX/cgi-bin/hisnet/getworkstate.cgi"
 
+# echo
+# echo 'setsystime:'
+# current_date="$(date +%Y%m%d%H%M%S)"
+# curl "$WOLFBOX/cgi-bin/hisnet/setsystime.cgi?&-time=$current_date"
+
 echo
-echo 'setsystime:'
-current_date="$(date +%Y%m%d%H%M%S)"
-curl "$WOLFBOX/cgi-bin/hisnet/setsystime.cgi?&-time=$current_date"
+echo 'getmedia:'
+# front_norm
+# front, rear, extra
+# emer, norm, photo
+curl "$WOLFBOX/cgi-bin/hisnet/getdirfilecount.cgi?&-dir=rear_photo"
 
 # echo
 # echo 'experiment:'
@@ -29,21 +36,21 @@ curl "$WOLFBOX/cgi-bin/hisnet/setsystime.cgi?&-time=$current_date"
 # done
 
 # curl "$WOLFBOX/cgi-bin/hisnet/getcamchnl.cgi?&-camid=0"
-echo
-echo 'getdeviceattr:'
-curl "$WOLFBOX/cgi-bin/hisnet/getdeviceattr.cgi"
+# echo
+# echo 'getdeviceattr:'
+# curl "$WOLFBOX/cgi-bin/hisnet/getdeviceattr.cgi"
 
-echo
-echo 'getcamnum:'
-curl "$WOLFBOX/cgi-bin/hisnet/getcamnum.cgi"
+# echo
+# echo 'getcamnum:'
+# curl "$WOLFBOX/cgi-bin/hisnet/getcamnum.cgi"
 
-echo
-echo 'getcamparamcapability:'
-curl "$WOLFBOX/cgi-bin/hisnet/getcamparamcapability.cgi?&-workmode=NORM_REC&-type=MEDIAMODE"
+# echo
+# echo 'getcamparamcapability:'
+# curl "$WOLFBOX/cgi-bin/hisnet/getcamparamcapability.cgi?&-workmode=NORM_REC&-type=MEDIAMODE"
 
-echo
-echo 'getworkmodeparam:'
-curl "$WOLFBOX/cgi-bin/hisnet/getvideoverbosefileinfo.cgi"
+# echo
+# echo 'getworkmodeparam:'
+# curl "$WOLFBOX/cgi-bin/hisnet/getvideoverbosefileinfo.cgi"
 
 # echo
 # echo 'getsdstatus:'
@@ -51,7 +58,7 @@ curl "$WOLFBOX/cgi-bin/hisnet/getvideoverbosefileinfo.cgi"
 
 # echo
 # echo 'getcamchnl:'
-# curl "$WOLFBOX/cgi-bin/hisnet/getcamchnl.cgi?&-camid=2"
+# curl "$WOLFBOX/cgi-bin/hisnet/getcamchnl.cgi?&-camid=1"
 
 # echo
 # echo 'getcommparamcapability:'

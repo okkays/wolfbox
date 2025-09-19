@@ -36,7 +36,7 @@ def read_frame(streamer):
 
 
 @contextlib.contextmanager
-def stream(source):
+def capture(source):
     try:
         cap_info, stream = _open_stream(source)
         yield (cap_info, stream)
